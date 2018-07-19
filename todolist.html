@@ -43,12 +43,18 @@
             line-height: 18px;
             text-align: center;
         }
+        h4>span {
+            color: red;
+            /* font-size: 20px; */
+            /* font-weight: 700; */
+        }
 
     </style>
 <body>
     <div id="app">
         <input type="text" v-model="something" placeholder="请输入待办事项"><button @click="add">确定</button>
         <h2>TODOLIST</h2>
+        <h4>总计划有&nbsp;{{list.length}}&nbsp;个,&nbsp; <span>{{donum}}</span> &nbsp;个已完成</h4>
         <ul>
             <li v-bind:class="{done:item.isDone}" v-on:click="done(index)" v-for="(item, index) in list"><span>{{index+1}}. {{item.name}}</span><a href="javascript:void(0);" v-on:click.stop="remove(index)">x</a></li>
         </ul>
@@ -86,7 +92,6 @@
         }
     }else{
         console.log(2);
-
         list = [
                         {
                             name:'买菜',
@@ -106,10 +111,9 @@
                         } 
                     ]
     }
-    function save(){
-        window.localStorage.setItem('list',JSON.stringify(list));
-       
-    }
+    // function save(){
+    //     window.localStorage.setItem('list',JSON.stringify(list));   
+    // }
     let app = new Vue({
         el:'#app',
         data:{
@@ -122,17 +126,31 @@
                     name:this.something,
                     isDone:false
                 });
-                save();
+                this.save();
             },
             done(index){
                 this.list[index].isDone=!this.list[index].isDone;
-                save();
+                this.save();
             },
             remove(index){
                 this.list.splice(index,1);
-                save();
+                this.save();
+            },
+             save(){
+                window.localStorage.setItem('list',JSON.stringify(app.list));   
+            }
+        },
+        computed:{
+            donum(){
+                let sub = 0;
+                for(let i =0; i<this.list.length;i++){
+                    if(this.list[i].isDone){
+                        sub++
+                    }
+                }
+                return sub;
             }
         }
-
+        
     })
 </script>
