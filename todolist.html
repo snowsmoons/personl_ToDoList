@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+        ul{
+            list-style: none;
+            width: 500px;
+            margin: 0 auto;
+        }
+        li{
+            font-size:22px;
+            font-weight: 700;
+            color:hotpink;
+        }
+        h2{
+            text-align: center;
+        }
+        #app{
+            text-align: center;
+        }
+        ul>li{
+            text-align: left;
+            cursor: pointer;
+        }
+        li.done span{
+            text-decoration: line-through;
+            color: gray;
+           
+        }
+        a {
+            text-decoration: none;
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            float: right;
+            color: gray;
+            line-height: 18px;
+            text-align: center;
+        }
+
+    </style>
+<body>
+    <div id="app">
+        <input type="text" v-model="something" placeholder="请输入待办事项"><button @click="add">确定</button>
+        <h2>TODOLIST</h2>
+        <ul>
+            <li v-bind:class="{done:item.isDone}" v-on:click="done(index)" v-for="(item, index) in list"><span>{{index+1}}. {{item.name}}</span><a href="javascript:void(0);" v-on:click.stop="remove(index)">x</a></li>
+        </ul>
+    </div>
+    
+</body>
+</html>
+<script src="./lib/vue.min.js"></script>
+<script>
+    let list = window.localStorage.getItem('list');
+    // console.log(list);
+    if(list){
+        console.log(1);
+        list = JSON.parse(list);
+        // console.log(list);
+        if(list.length==0){
+            list = [
+                        {
+                            name:'买菜',
+                            isDone:false
+                        },
+                        {
+                            name:'洗菜',
+                            isDone:false
+                        },
+                        {
+                            name:'切菜',
+                            isDone:false
+                        },
+                        {
+                            name:'烧菜',
+                            isDone:false
+                        } 
+                    ]
+        }
+    }else{
+        console.log(2);
+
+        list = [
+                        {
+                            name:'买菜',
+                            isDone:false
+                        },
+                        {
+                            name:'洗菜',
+                            isDone:false
+                        },
+                        {
+                            name:'切菜',
+                            isDone:false
+                        },
+                        {
+                            name:'烧菜',
+                            isDone:false
+                        } 
+                    ]
+    }
+    function save(){
+        window.localStorage.setItem('list',JSON.stringify(list));
+       
+    }
+    let app = new Vue({
+        el:'#app',
+        data:{
+            something:'',
+            list
+        },
+        methods:{
+            add(){
+                this.list.push({
+                    name:this.something,
+                    isDone:false
+                });
+                save();
+            },
+            done(index){
+                this.list[index].isDone=!this.list[index].isDone;
+                save();
+            },
+            remove(index){
+                this.list.splice(index,1);
+                save();
+            }
+        }
+
+    })
+</script>
